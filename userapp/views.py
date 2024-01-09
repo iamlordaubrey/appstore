@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics
 
 from userapp.models import App
-from userapp.serializers import UserappSerializer, AdminUserappSerializer, VerifiedAppSerializer
+from userapp.serializers import UserappSerializer, AdminUserappSerializer, VerifiedAppSerializer, PurchaseAppSerializer
 
 User = get_user_model()
 
@@ -34,11 +34,12 @@ class AppsAPIView(generics.ListCreateAPIView):
             return self.queryset.filter(owner=self.request.user)
         return self.queryset.all()
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
         """
-        Extracts (and saves) owner from the request
+        Overloading create method to add owner to the request
         """
-        return serializer.save(owner=self.request.user)
+        request.data.update({'owner': request.user.id})
+        return super(AppsAPIView, self).create(request, *args, **kwargs)
 
 
 class AppsDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -97,3 +98,13 @@ class VerifiedAppsDetailAPIView(generics.RetrieveAPIView):
         Returns all verified apps.
         """
         return self.queryset.filter(is_verified=True)
+
+
+class PurchaseAppDetailAPIView(generics.RetrieveUpdateAPIView):
+    """
+    Makes a purchase
+    """
+    queryset = App.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PurchaseAppSerializer
+    lookup_field = 'id'
