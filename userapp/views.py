@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics
 
 from userapp.models import App
-from userapp.serializers import UserappSerializer, AdminUserappSerializer
+from userapp.serializers import UserappSerializer, AdminUserappSerializer, VerifiedAppSerializer
 
 User = get_user_model()
 
@@ -16,7 +16,6 @@ class AppsAPIView(generics.ListCreateAPIView):
     """
     queryset = App.objects.all()
     permission_classes = (IsAuthenticated,)
-    # lookup_field = 'id'
 
     def get_serializer_class(self):
         """
@@ -67,3 +66,34 @@ class AppsDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         if not self.request.user.is_staff:
             return self.queryset.filter(owner=self.request.user)
         return self.queryset.all()
+
+
+class VerifiedAppsAPIView(generics.ListAPIView):
+    """
+    Lists all verified apps.
+    """
+    queryset = App.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = VerifiedAppSerializer
+
+    def get_queryset(self):
+        """
+        Returns all verified apps.
+        """
+        return self.queryset.filter(is_verified=True)
+
+
+class VerifiedAppsDetailAPIView(generics.RetrieveAPIView):
+    """
+    Retrieves a verified app
+    """
+    queryset = App.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = VerifiedAppSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        """
+        Returns all verified apps.
+        """
+        return self.queryset.filter(is_verified=True)

@@ -14,3 +14,9 @@ class UserappSerializer(serializers.ModelSerializer):
         model = App
         fields = ('id', 'title', 'description', 'is_verified')
         read_only_fields = ('is_verified',)
+
+
+class VerifiedAppSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = App
+        fields = ('id', 'title', 'description', 'is_verified')
