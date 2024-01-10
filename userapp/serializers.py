@@ -8,13 +8,14 @@ class AdminUserappSerializer(serializers.ModelSerializer):
     class Meta:
         model = App
         fields = ('id', 'title', 'description', 'owner', 'is_verified', 'cost')
+        read_only_fields = ('id', )
 
 
 class UserappSerializer(serializers.ModelSerializer):
     class Meta:
         model = App
         fields = ('id', 'title', 'description', 'owner', 'is_verified', 'cost')
-        read_only_fields = ('is_verified',)
+        read_only_fields = ('is_verified', 'id', )
 
 
 class VerifiedAppSerializer(serializers.ModelSerializer):

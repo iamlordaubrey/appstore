@@ -2,4 +2,6 @@ django==5.0.*
 djangorestframework==3.14.*
 djangorestframework-simplejwt==5.3.*
 
+drf-yasg==1.21.*
+
 pip-tools==7.3.*
